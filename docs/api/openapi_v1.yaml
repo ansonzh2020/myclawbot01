@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Touzi Backend API
+  version: 1.0.0
+servers:
+  - url: https://api.example.com
+paths:
+  /v1/auth/siwa:
+    post:
+      summary: Sign in with Apple (SIWA)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [identityToken]
+              properties:
+                identityToken:
+                  type: string
+                clientInfo:
+                  type: object
+                  additionalProperties: true
+      responses:
+        '200':
+          description: OK
+  /v1/safety-settings:
+    get:
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+    put:
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                alertsEnabled: { type: boolean }
+                includeLocationInAlert:
+                  type: string
+                  enum: [none, approx, precise]
+      responses:
+        '200': { description: OK }
+  /v1/contacts:
+    put:
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [contacts]
+              properties:
+                contacts:
+                  type: array
+                  maxItems: 5
+                  items:
+                    type: object
+                    required: [name, email, enabled]
+                    properties:
+                      id: { type: string }
+                      name: { type: string }
+                      relation: { type: string }
+                      email: { type: string, format: email }
+                      enabled: { type: boolean }
+      responses:
+        '200': { description: OK }
+  /v1/checkins:
+    post:
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [timestamp, locationShareMode]
+              properties:
+                timestamp: { type: string, format: date-time }
+                locationShareMode:
+                  type: string
+                  enum: [none, approx, precise]
+                location:
+                  type: object
+                  properties:
+                    lat: { type: number }
+                    lng: { type: number }
+                    accuracyMeters: { type: number }
+      responses:
+        '200': { description: OK }
+  /v1/alerts/test-email:
+    post:
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+  /v1/account:
+    delete:
+      security: [{ bearerAuth: [] }]
+      responses:
+        '200': { description: OK }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
