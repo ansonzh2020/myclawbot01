@@ -1,8 +1,9 @@
-# Technical Spec (v1.0)
+# Technical Spec (v1.0) — Touzi
 
 ## 1. Client (iOS)
 - SwiftUI
-- SwiftData (or Core Data if preferred)
+- **iOS 16+** deployment target (maximize installed base)
+- Core Data (SwiftData requires iOS 17+)
 - SIWA (Sign in with Apple) for backend auth
 - Local image storage for attachments (FileManager)
 
@@ -21,9 +22,9 @@
 - Emergency contacts/settings → PUT /contacts, PUT /safety-settings
 
 ## 2. Backend (minimal)
-- REST API with JWT auth
-- Cron job runner checks overdue users
-- Email provider integration (SES/SendGrid)
+- REST API with JWT auth (deploy on **Render**)
+- Cron job runner checks overdue users (Render cron or AWS EventBridge)
+- Email provider integration: **AWS SES (SMTP)** recommended for v1
 
 ### Tables
 - users
